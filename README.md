@@ -8,7 +8,7 @@ Vim common configure.
 Configure vimrc like:
 ```vim
 " custom plugin
-let g:my_plugs = [
+let g:cc_plug_custom = [
 \  'a.vim',
 \  'ctags.vim',
 ]

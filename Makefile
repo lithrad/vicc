@@ -12,7 +12,7 @@ download:
 	git clone $(master) --depth=1 $(dest)
 
 vim:
-	@echo "let g:my_plugs = []" >> $(vimrc)
+	@echo "let g:cc_plug_custom = []" >> $(vimrc)
 	@echo "let \$$PLUG_DIR = expand('\$$HOME/.vim/bundle')" >> $(vimrc)
 	@echo "source \$$PLUG_DIR/vimcc/plugin/vimcc.vim" >> $(vimrc)
 	@vim +PlugInstall +qall
