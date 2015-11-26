@@ -1,4 +1,4 @@
-vimcc
+vicc
 =====
 
 Vim common configure.
@@ -17,7 +17,7 @@ let g:cc_plug_custom = [
 let $PLUG_DIR = expand('$HOME/.vim/bundle')
 
 " load config file
-source $PLUG_DIR/vimcc/plugin/vimcc.vim
+source $PLUG_DIR/vicc/plugin/vicc.vim
 
 " append custom plugins
 Plug 'a.vim'

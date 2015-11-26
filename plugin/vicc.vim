@@ -1,10 +1,10 @@
-"vimcc.vim - vim common configure
+"vicc.vim - vim common configure
 "vim: et ts=4 sts=4 sw=4 tw=78
 
-if exists('g:loaded_vimcc') || &compatible
+if exists('g:loaded_vicc') || &compatible
     finish
 endif
-let g:loaded_vimcc = 1
+let g:loaded_vicc = 1
 
 set nocompatible
 
@@ -12,7 +12,7 @@ set nocompatible
 "----------------------------
 " load plugs
 "----------------------------
-let s:plugs = ['lithrad/vimcc']
+let s:plugs = ['lithrad/vicc']
 
 " set default plug groups
 "
@@ -25,13 +25,12 @@ if !exists('g:cc_plug_groups')
     \]
 endif
 
-" common plugs
+" -- common plugs
 "
 if count(g:cc_plug_groups, 'common')
     let s:plug_common = [
         \ 'EnhCommentify.vim',
         \ 'airblade/vim-gitgutter',
-        \ 'altercation/vim-colors-solarized',
         \ 'bling/vim-airline',
         \ 'junegunn/vim-plug',
         \ 'kien/ctrlp.vim',
@@ -41,18 +40,16 @@ if count(g:cc_plug_groups, 'common')
         \ 'Yggdroot/indentLine',
         \ 'mileszs/ack.vim',
         \ 'sjl/gundo.vim',
-        \ 'terryma/vim-expand-region',
-        \ 'terryma/vim-multiple-cursors',
-        \ 'tpope/vim-surround',
         \]
     call extend(s:plugs, s:plug_common)
     unlet s:plug_common
 endif
 
-" theme plugs
+" -- theme plugs
 "
 if count(g:cc_plug_groups, 'theme')
     let s:plug_theme = [
+        \ 'altercation/vim-colors-solarized',
         \ 'morhetz/gruvbox',
         \ 'w0ng/vim-hybrid',
         \]
@@ -60,19 +57,35 @@ if count(g:cc_plug_groups, 'theme')
     unlet s:plug_theme
 endif
 
-" coding plugs
+" -- unite plugs
+"
+if count(g:cc_plug_groups, 'unite')
+    let s:plug_unite = [
+        \ 'Shougo/unite.vim',
+        \]
+    call extend(s:plugs, s:plug_unite)
+    unlet s:plug_unite
+endif
+
+" -- coding plugs
 "
 if count(g:cc_plug_groups, 'coding')
     let s:plug_coding = [
         \ 'tacahiroy/ctrlp-funky',
         \ 'tpope/vim-fugitive',
         \ 'luochen1990/rainbow',
+        \ 'terryma/vim-expand-region',
+        \ 'terryma/vim-multiple-cursors',
+        \ 'tpope/vim-surround',
+        \ 'tpope/vim-repeat',
+        \ 'majutsushi/tagbar',
+        \ 'junegunn/vim-easy-align',
         \]
     call extend(s:plugs, s:plug_coding)
     unlet s:plug_coding
 endif
 
-" neocomplete plugs
+" -- neocomplete plugs
 "
 if count(g:cc_plug_groups, 'neocomplete')
     let s:plug_neocomplete = [
@@ -85,7 +98,7 @@ if count(g:cc_plug_groups, 'neocomplete')
     unlet s:plug_neocomplete
 endif
 
-" python plugs
+" -- python plugs
 "
 if count(g:cc_plug_groups, 'python')
     let s:plug_python = [
@@ -98,7 +111,7 @@ if count(g:cc_plug_groups, 'python')
     unlet s:plug_python
 endif
 
-" php plugs
+" -- php plugs
 "
 if count(g:cc_plug_groups, 'php')
     let s:plug_php = [
@@ -110,7 +123,7 @@ if count(g:cc_plug_groups, 'php')
     unlet s:plug_php
 endif
 
-" html plugs
+" -- html plugs
 "
 if count(g:cc_plug_groups, 'html')
     let s:plug_html = [
@@ -120,7 +133,7 @@ if count(g:cc_plug_groups, 'html')
     unlet s:plug_html
 endif
 
-" custom plugs
+" -- custom plugs
 "
 if count(g:cc_plug_groups, 'custom')
     if exists('g:cc_plug_custom') && !empty(g:cc_plug_custom)
@@ -128,7 +141,7 @@ if count(g:cc_plug_groups, 'custom')
     endif
 endif
 
-" filter disabled plugs
+" -- filter disabled plugs
 "
 if count(g:cc_plug_groups, 'disable')
     if exists('g:cc_plug_disable') && !empty(g:cc_plug_disable)
@@ -146,9 +159,9 @@ endif
 
 " load enabled plugs
 "
-if isdirectory(expand('$PLUG_DIR/vimcc'))
+if isdirectory(expand('$PLUG_DIR/vicc'))
     if !exists('g:plugs')
-        set rtp+=$PLUG_DIR/vimcc
+        set rtp+=$PLUG_DIR/vicc
         call plug#begin($PLUG_DIR)
     endif
 
@@ -218,6 +231,20 @@ noremap <Leader>ve :call ToggleViEd()<CR>
 set history=1000                " store a ton of history (default is 20)
 set hidden                      " allow buffer switching without saving
 
+" trigger colorcolumn 80
+function! ToggleCC()
+    let s:cc = &colorcolumn
+    if s:cc == ''
+        set cc=80
+    else
+        set cc=
+    endif
+endfunction
+noremap <Leader>cc :call ToggleCC()<CR>
+
+" trigger line number
+noremap <silent><Leader>ln :set nu!<CR>
+
 " disable backup and swap files
 "
 set nobackup
@@ -241,11 +268,12 @@ endif
 
 set backspace=2
 set linespace=0                 " no extra spaces between rows
-set number                      " line numbers on
+set nonumber                    " line numbers off
 set showmatch                   " show matching brackets
 set matchtime=0                 " no blink with match
 set incsearch                   " find as you type search
 set hlsearch                    " highlight search terms
+set nowrapscan
 set winminheight=0              " windows can be 0 line height
 set ignorecase                  " case insensitive search
 set smartcase                   " case sensitive when uc present
@@ -391,7 +419,11 @@ noremap N Nzz
 
 " select all
 "
-noremap gV `[v`]$
+noremap <Leader>sa `[v`]$
+
+" select block
+"
+noremap <Leader>sb V`}
 
 " visual shifting
 "
@@ -440,7 +472,7 @@ if exists('g:cc_nofun')
     finish
 endif
 
-" common plug config
+" -- common plug config
 "
 if count(g:cc_plug_groups, 'common')
 "{{{
@@ -504,25 +536,10 @@ if isdirectory(expand('$PLUG_DIR/nerdtree'))
     nnoremap <Leader>nt :NERDTreeToggle<CR>
 endif
 
-" vim-colors-solarized
-"
-if isdirectory(expand('$PLUG_DIR/vim-colors-solarized'))
-    set t_Co=16
-    let g:solarized_termtrans=1
-    colorscheme solarized
-endif
-
 " ack.vim - ack-grep required
 "
 if isdirectory(expand('$PLUG_DIR/ack.vim'))
     nnoremap <silent><Leader>ag :Ack -i
-endif
-
-" vim-expand-region
-"
-if isdirectory(expand('$PLUG_DIR/vim-expand-region'))
-    vmap v <Plug>(expand_region_expand)
-    vmap <C-V> <Plug>(expand_region_shrink)
 endif
 
 " gundo
@@ -534,7 +551,54 @@ endif
 "}}}
 endif
 
-" coding plug config
+" -- theme plug config
+"
+if count(g:cc_plug_groups, 'theme')
+"{{{
+"
+" vim-colors-solarized
+"
+if isdirectory(expand('$PLUG_DIR/vim-colors-solarized'))
+    set t_Co=16
+    let g:solarized_termtrans=1
+    colorscheme solarized
+endif
+"
+"}}}
+endif
+
+" -- unite plug config
+"
+if count(g:cc_plug_groups, 'unite')
+"{{{
+"
+" unite.vim
+"
+if isdirectory(expand('$PLUG_DIR/unite.vim'))
+    let g:unite_sourcce_history_yank_enable = 1
+    call unite#filters#matcher_default#use(['matcher_fuzzy'])
+    nnoremap <Leader>ut :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<CR>
+    nnoremap <Leader>uf :<C-u>Unite -no-split -buffer-name=files   -start-insert file<CR>
+    nnoremap <Leader>ur :<C-u>Unite -no-split -buffer-name=mru     -start-insert file_mru<CR>
+    nnoremap <Leader>uo :<C-u>Unite -no-split -buffer-name=outline -start-insert outline<CR>
+    nnoremap <Leader>uy :<C-u>Unite -no-split -buffer-name=yank    history/yank<CR>
+    nnoremap <Leader>ue :<C-u>Unite -no-split -buffer-name=buffer  buffer<CR>
+
+    " custom mappings for the unite buffer
+    autocmd FileType unite call s:unite_settings()
+    function! s:unite_settings()
+        " play nice with supertab
+        let b:SuperTabDisabled=1
+        " enable navigation with control-j and control-k in insert mode
+        imap <buffer><C-j> <Plug>(unite_select_next_line)
+        imap <buffer><C-k> <Plug>(unite_select_previous_line)
+    endfunction
+endif
+"
+"}}}
+endif
+
+" -- coding plug config
 "
 if count(g:cc_plug_groups, 'coding')
 "{{{
@@ -561,11 +625,46 @@ if isdirectory(expand('$PLUG_DIR/rainbow'))
     let g:rainbow_active = 0
     nnoremap <Leader>rb :RainbowToggle<CR>
 endif
+
+" vim-expand-region
+"
+if isdirectory(expand('$PLUG_DIR/vim-expand-region'))
+    vmap v <Plug>(expand_region_expand)
+    vmap <C-V> <Plug>(expand_region_shrink)
+endif
+
+" vim-easy-align
+"
+if isdirectory(expand('$PLUG_DIR/vim-easy-align'))
+    nmap ga <Plug>(EasyAlign)
+    xmap ga <Plug>(EasyAlign)
+endif
+
+" tagbar - ctags required
+"
+if isdirectory(expand('$PLUG_DIR/tagbar'))
+    nnoremap <Leader>tg :TagbarToggle<CR>
+endif
 "
 "}}}
 endif
 
-" python plug config
+" -- neocomplete plug config
+"
+if count(g:cc_plug_groups, 'neocomplete')
+"{{{
+"
+let g:acp_enableAtStartup = 0
+let g:neocomplete#enable_at_startup = 1
+let g:neocomplete#enable_smart_case = 1
+let g:neocomplete#enable_auto_delimiter = 1
+let g:neocomplete#max_list = 15
+let g:neocomplete#force_overwrite_completefunc = 1
+"
+"}}}
+endif
+
+" -- python plug config
 "
 if count(g:cc_plug_groups, 'python')
 "{{{
@@ -587,7 +686,7 @@ endif
 "}}}
 endif
 
-" php plug config
+" -- php plug config
 "
 if count(g:cc_plug_groups, 'php')
 "{{{
@@ -600,4 +699,22 @@ if isdirectory(expand('$PLUG_DIR/PIV'))
 endif
 "
 "}}}
+endif
+
+
+"----------------------------
+" gui setting
+"----------------------------
+if has('gui_running')
+    set guioptions+=mTLrb
+    set guioptions-=mTLrb
+    set shortmess=atI
+
+    set guicursor=n-v-c:hor8-blinkon0
+    set guifont=Terminus\ 9,
+              \ Andale\ Mono\ Regular\ 9,
+              \ Ubuntu\ Mono\ Regular\ 9,
+              \ Courier\ New\ Regular\ 9,
+
+    highlight Cursor gui=NONE guibg=deeppink
 endif
