@@ -1,5 +1,5 @@
 vicc
-=====
+====
 
 Vim common configure.
 
@@ -27,8 +27,8 @@ call plug#end()
 
 Install Dependencies:
 ```Bash
-# ubuntu - for ack.vim
-apt-get install ack-grep
+# ubuntu
+apt-get install ack-grep ctags
 ```
 
 ## Management

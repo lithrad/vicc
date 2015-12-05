@@ -34,6 +34,7 @@ if count(g:cc_plug_groups, 'common')
         \ 'bling/vim-airline',
         \ 'junegunn/vim-plug',
         \ 'kien/ctrlp.vim',
+        \ 'kshenoy/vim-signature',
         \ 'Lokaltog/vim-easymotion',
         \ 'plasticboy/vim-markdown',
         \ 'scrooloose/nerdtree',
@@ -62,6 +63,7 @@ endif
 if count(g:cc_plug_groups, 'unite')
     let s:plug_unite = [
         \ 'Shougo/unite.vim',
+        \ 'Shougo/vimfiler.vim',
         \]
     call extend(s:plugs, s:plug_unite)
     unlet s:plug_unite
@@ -74,6 +76,7 @@ if count(g:cc_plug_groups, 'coding')
         \ 'tacahiroy/ctrlp-funky',
         \ 'tpope/vim-fugitive',
         \ 'luochen1990/rainbow',
+        \ 'szw/vim-ctrlspace',
         \ 'terryma/vim-expand-region',
         \ 'terryma/vim-multiple-cursors',
         \ 'tpope/vim-surround',
@@ -111,26 +114,17 @@ if count(g:cc_plug_groups, 'python')
     unlet s:plug_python
 endif
 
-" -- php plugs
+" -- web plugs
 "
-if count(g:cc_plug_groups, 'php')
-    let s:plug_php = [
+if count(g:cc_plug_groups, 'web')
+    let s:plug_web = [
         \ 'spf13/PIV',
         \ 'arnaud-lb/vim-php-namespace',
         \ 'beyondwords/vim-twig',
-        \]
-    call extend(s:plugs, s:plug_php)
-    unlet s:plug_php
-endif
-
-" -- html plugs
-"
-if count(g:cc_plug_groups, 'html')
-    let s:plug_html = [
         \ 'mattn/emmet-vim',
         \]
-    call extend(s:plugs, s:plug_html)
-    unlet s:plug_html
+    call extend(s:plugs, s:plug_web)
+    unlet s:plug_web
 endif
 
 " -- custom plugs
@@ -333,10 +327,10 @@ endif
 
 " easy moving through tabs and windows
 "
-noremap <C-J> <C-W>j<C-W>_
-noremap <C-K> <C-W>k<C-W>_
-noremap <C-L> <C-W>l<C-W>_
-noremap <C-H> <C-W>h<C-W>_
+noremap <C-J> <C-W>j
+noremap <C-K> <C-W>k
+noremap <C-L> <C-W>l
+noremap <C-H> <C-W>h
 
 " wrapped lines goes down/up to the next row
 "
@@ -354,7 +348,7 @@ noremap <Leader>l :nohlsearch<CR>
 noremap <Leader>w :w<CR>
 noremap <Leader>q :q<CR>
 noremap <Leader>e :e!<CR>
-noremap <Leader>sw :w !sudo tee % >/dev/null<CR>
+noremap <Leader>sw :w !sudo tee % >/dev/null<CR>e!<CR><CR>
 
 " quick edit
 "
@@ -369,8 +363,8 @@ inoremap kj <Esc>
 
 " quick split and close window
 "
-noremap <Leader>v <C-W>v
-noremap <Leader>s <C-W>s
+noremap <Leader>vs <C-W>v
+noremap <Leader>sp <C-W>s
 noremap <Leader>k <C-W>c
 
 " quick moving through tabs and buffers
@@ -472,6 +466,11 @@ if exists('g:cc_nofun')
     finish
 endif
 
+" if plug is loaded
+function! IsPlugLoad(plug)
+    return has_key(g:plugs, a:plug)
+endfunction
+
 " -- common plug config
 "
 if count(g:cc_plug_groups, 'common')
@@ -479,21 +478,19 @@ if count(g:cc_plug_groups, 'common')
 "
 " vim-airline
 "
-if isdirectory(expand('$PLUG_DIR/vim-airline'))
+if IsPlugLoad('vim-airline')
     let g:airline_theme = 'murmur'
     let g:airline_left_sep = ''
     let g:airline_right_sep = ''
     let g:airline_right_alt_sep = ':'
     let g:airline_section_z = airline#section#create_right(['%2c','%2l'])
     let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '|'
     let g:airline#extensions#tabline#buffer_nr_show = 1
 endif
 
 " ctrlp.vim
 "
-if isdirectory(expand('$PLUG_DIR/ctrlp.vim'))
+if IsPlugLoad('ctrlp.vim')
     let g:ctrlp_map = '<Leader>ff'
     let g:ctrlp_custom_ignore = { 'dir':'\.git$' }
     if executable('ack-grep')
@@ -503,13 +500,13 @@ endif
 
 " vim-easymotion
 "
-if isdirectory(expand('$PLUG_DIR/vim-easymotion'))
+if IsPlugLoad('vim-easymotion')
     let g:EasyMotion_leader_key = 'f'
 endif
 
 " vim-gitgutter
 "
-if isdirectory(expand('$PLUG_DIR/vim-gitgutter'))
+if IsPlugLoad('vim-gitgutter')
     nnoremap <Leader>gg :GitGutterToggle<CR>
     let g:gitgutter_map_keys = 0
     let g:gitgutter_enabled = 0
@@ -518,33 +515,35 @@ endif
 
 " indentLine
 "
-if isdirectory(expand('$PLUG_DIR/indentLine'))
+if IsPlugLoad('indentLine')
     nnoremap <Leader>il :IndentLinesToggle<CR>
 endif
 
 " vim-markdown
 "
-if isdirectory(expand('$PLUG_DIR/vim-markdown'))
+if IsPlugLoad('vim-markdown')
     let g:vim_markdown_folding_disabled = 1
 endif
 
 " nerdtree
 "
-if isdirectory(expand('$PLUG_DIR/nerdtree'))
-    let NERDTreeWinPos='left'
-    let NERDTreeHighlightCursorline=1
+if IsPlugLoad('nerdtree')
     nnoremap <Leader>nt :NERDTreeToggle<CR>
+    let NERDTreeWinPos = 'left'
+    let NERDTreeHighlightCursorline = 1
+    let g:NERDTreeMapOpenSplit = 's'
+    let g:NERDTreeMapOpenVSplit = 'v'
 endif
 
 " ack.vim - ack-grep required
 "
-if isdirectory(expand('$PLUG_DIR/ack.vim'))
+if IsPlugLoad('ack.vim')
     nnoremap <silent><Leader>ag :Ack -i
 endif
 
 " gundo
 "
-if isdirectory(expand('$PLUG_DIR/gundo'))
+if IsPlugLoad('gundo')
     nnoremap <Leader>h :GundoToggle<CR>
 endif
 "
@@ -558,10 +557,9 @@ if count(g:cc_plug_groups, 'theme')
 "
 " vim-colors-solarized
 "
-if isdirectory(expand('$PLUG_DIR/vim-colors-solarized'))
+if IsPlugLoad('vim-colors-solarized')
     set t_Co=16
     let g:solarized_termtrans=1
-    colorscheme solarized
 endif
 "
 "}}}
@@ -574,7 +572,7 @@ if count(g:cc_plug_groups, 'unite')
 "
 " unite.vim
 "
-if isdirectory(expand('$PLUG_DIR/unite.vim'))
+if IsPlugLoad('unite.vim')
     let g:unite_sourcce_history_yank_enable = 1
     call unite#filters#matcher_default#use(['matcher_fuzzy'])
     nnoremap <Leader>ut :<C-u>Unite -no-split -buffer-name=files   -start-insert file_rec/async:!<CR>
@@ -594,6 +592,13 @@ if isdirectory(expand('$PLUG_DIR/unite.vim'))
         imap <buffer><C-k> <Plug>(unite_select_previous_line)
     endfunction
 endif
+
+" vimfiler.vim
+"
+if IsPlugLoad('vimfiler.vim')
+    nnoremap <silent><Leader>X :VimFiler<CR>
+    let g:vimfiler_as_default_explorer = 1
+endif
 "
 "}}}
 endif
@@ -605,7 +610,7 @@ if count(g:cc_plug_groups, 'coding')
 "
 " ctrlp-funky
 "
-if isdirectory(expand('$PLUG_DIR/ctrlp-funky'))
+if IsPlugLoad('ctrlp-funky')
     let g:ctrlp_funky_syntax_highlight = 1
     let g:ctrlp_extensions = ['funky']
     nnoremap <Leader>cf :CtrlPFunky<CR>
@@ -613,36 +618,39 @@ endif
 
 " vim-fugitive
 "
-if isdirectory(expand('$PLUG_DIR/vim-fugitive'))
-    nnoremap <silent><Leader>gs :Gstatus<CR>
-    nnoremap <silent><Leader>gd :Gdiff<CR>
-    nnoremap <silent><Leader>gc :Gcommit<CR>
+if IsPlugLoad('vim-fugitive')
+    nnoremap <Leader>gb :Gblame<CR>
+    nnoremap <Leader>gs :Gstatus<CR>
+    nnoremap <Leader>gd :Gdiff<CR>
+    nnoremap <Leader>gl :Glog<CR>
+    nnoremap <Leader>gc :Gcommit<CR>
+    nnoremap <Leader>gp :Git push<CR>
 endif
 
 " rainbow
 "
-if isdirectory(expand('$PLUG_DIR/rainbow'))
+if IsPlugLoad('rainbow')
     let g:rainbow_active = 0
     nnoremap <Leader>rb :RainbowToggle<CR>
 endif
 
 " vim-expand-region
 "
-if isdirectory(expand('$PLUG_DIR/vim-expand-region'))
+if IsPlugLoad('vim-expand-region')
     vmap v <Plug>(expand_region_expand)
     vmap <C-V> <Plug>(expand_region_shrink)
 endif
 
 " vim-easy-align
 "
-if isdirectory(expand('$PLUG_DIR/vim-easy-align'))
+if IsPlugLoad('vim-easy-align')
     nmap ga <Plug>(EasyAlign)
     xmap ga <Plug>(EasyAlign)
 endif
 
 " tagbar - ctags required
 "
-if isdirectory(expand('$PLUG_DIR/tagbar'))
+if IsPlugLoad('tagbar')
     nnoremap <Leader>tg :TagbarToggle<CR>
 endif
 "
@@ -654,12 +662,16 @@ endif
 if count(g:cc_plug_groups, 'neocomplete')
 "{{{
 "
-let g:acp_enableAtStartup = 0
-let g:neocomplete#enable_at_startup = 1
-let g:neocomplete#enable_smart_case = 1
-let g:neocomplete#enable_auto_delimiter = 1
-let g:neocomplete#max_list = 15
-let g:neocomplete#force_overwrite_completefunc = 1
+" neocomplete.vim
+"
+if IsPlugLoad('neocomplete.vim')
+    let g:acp_enableAtStartup = 0
+    let g:neocomplete#enable_at_startup = 1
+    let g:neocomplete#enable_smart_case = 1
+    let g:neocomplete#enable_auto_delimiter = 1
+    let g:neocomplete#max_list = 15
+    let g:neocomplete#force_overwrite_completefunc = 1
+endif
 "
 "}}}
 endif
@@ -676,7 +688,7 @@ if !has('python') && !has('python3')
 endif
 
 " python-mode
-if isdirectory(expand('$PLUG_DIR/python-mode'))
+if IsPlugLoad('python-mode')
     let g:pymode_lint_checkers = ['pyflakes']
     let g:pymode_trim_whitespaces = 0
     let g:pymode_options = 0
@@ -686,14 +698,14 @@ endif
 "}}}
 endif
 
-" -- php plug config
+" -- web plug config
 "
-if count(g:cc_plug_groups, 'php')
+if count(g:cc_plug_groups, 'web')
 "{{{
 "
 " PIV
 "
-if isdirectory(expand('$PLUG_DIR/PIV'))
+if IsPlugLoad('PIV')
     let g:DisableAutoPHPFolding = 0
     let g:PIVAutoClose = 0
 endif
