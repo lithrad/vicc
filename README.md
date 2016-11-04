@@ -1,7 +1,7 @@
 vicc
 ====
 
-Vim common configure.
+Vim common configuration.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Configure vimrc like:
 let g:cc_plug_custom = [
 \  'a.vim',
 \  'ctags.vim',
-]
+\]
 
 " set plugin source path
 let $PLUG_DIR = expand('$HOME/.vim/bundle')

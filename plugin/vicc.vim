@@ -1,4 +1,4 @@
-"vicc.vim - vim common configure
+"vicc.vim - vim common configuration
 "vim: et ts=4 sts=4 sw=4 tw=78
 
 if exists('g:loaded_vicc') || &compatible
@@ -31,31 +31,19 @@ if count(g:cc_plug_groups, 'common')
     let s:plug_common = [
         \ 'EnhCommentify.vim',
         \ 'airblade/vim-gitgutter',
-        \ 'bling/vim-airline',
         \ 'junegunn/vim-plug',
         \ 'kien/ctrlp.vim',
         \ 'kshenoy/vim-signature',
         \ 'Lokaltog/vim-easymotion',
         \ 'plasticboy/vim-markdown',
         \ 'scrooloose/nerdtree',
+        \ 'vim-airline/vim-airline',
         \ 'Yggdroot/indentLine',
         \ 'mileszs/ack.vim',
         \ 'sjl/gundo.vim',
         \]
     call extend(s:plugs, s:plug_common)
     unlet s:plug_common
-endif
-
-" -- theme plugs
-"
-if count(g:cc_plug_groups, 'theme')
-    let s:plug_theme = [
-        \ 'altercation/vim-colors-solarized',
-        \ 'morhetz/gruvbox',
-        \ 'w0ng/vim-hybrid',
-        \]
-    call extend(s:plugs, s:plug_theme)
-    unlet s:plug_theme
 endif
 
 " -- unite plugs
@@ -226,6 +214,7 @@ set history=1000                " store a ton of history (default is 20)
 set hidden                      " allow buffer switching without saving
 
 " trigger colorcolumn 80
+"
 function! ToggleCC()
     let s:cc = &colorcolumn
     if s:cc == ''
@@ -237,6 +226,7 @@ endfunction
 noremap <Leader>cc :call ToggleCC()<CR>
 
 " trigger line number
+"
 noremap <silent><Leader>ln :set nu!<CR>
 
 " disable backup and swap files
@@ -467,6 +457,7 @@ if exists('g:cc_nofun')
 endif
 
 " if plug is loaded
+"
 function! IsPlugLoad(plug)
     return has_key(g:plugs, a:plug)
 endfunction
@@ -479,7 +470,6 @@ if count(g:cc_plug_groups, 'common')
 " vim-airline
 "
 if IsPlugLoad('vim-airline')
-    let g:airline_theme = 'murmur'
     let g:airline_left_sep = ''
     let g:airline_right_sep = ''
     let g:airline_right_alt_sep = ':'
@@ -545,21 +535,6 @@ endif
 "
 if IsPlugLoad('gundo')
     nnoremap <Leader>h :GundoToggle<CR>
-endif
-"
-"}}}
-endif
-
-" -- theme plug config
-"
-if count(g:cc_plug_groups, 'theme')
-"{{{
-"
-" vim-colors-solarized
-"
-if IsPlugLoad('vim-colors-solarized')
-    set t_Co=16
-    let g:solarized_termtrans=1
 endif
 "
 "}}}
@@ -688,6 +663,7 @@ if !has('python') && !has('python3')
 endif
 
 " python-mode
+"
 if IsPlugLoad('python-mode')
     let g:pymode_lint_checkers = ['pyflakes']
     let g:pymode_trim_whitespaces = 0
@@ -721,12 +697,4 @@ if has('gui_running')
     set guioptions+=mTLrb
     set guioptions-=mTLrb
     set shortmess=atI
-
-    set guicursor=n-v-c:hor8-blinkon0
-    set guifont=Terminus\ 9,
-              \ Andale\ Mono\ Regular\ 9,
-              \ Ubuntu\ Mono\ Regular\ 9,
-              \ Courier\ New\ Regular\ 9,
-
-    highlight Cursor gui=NONE guibg=deeppink
 endif
